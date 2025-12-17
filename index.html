@@ -77,12 +77,6 @@
             border-radius: 4px;
             cursor: pointer;
         }
-
-        #thank-you {
-            display: none;
-            text-align: center;
-            color: green;
-        }
     </style>
 </head>
 
@@ -102,7 +96,7 @@
 
     <section class="form-section">
         <form id="contact-form" action="https://tobinv.app.n8n.cloud/webhook-test/1a6a28c2-92a4-4304-8181-9e55142ee106"
-            method="POST">
+            method="POST" onsubmit="handleSubmit(event)">
             <div class="form-group">
                 <label for="name">Name</label>
                 <input type="text" id="name" name="name" required>
@@ -113,25 +107,33 @@
             </div>
             <button type="submit" class="submit-btn">Submit</button>
         </form>
-
-        <div id="thank-you"></div>
     </section>
 
     <script>
-        document.getElementById('contact-form').addEventListener('submit', function (e) {
-            // Remove preventDefault if you want standard form submission
-            // e.preventDefault(); 
+        function handleSubmit(event) {
+            event.preventDefault(); // Prevent default form submission
 
+            // Redirect to thank you page with form data
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
 
-            const thankYouDiv = document.getElementById('thank-you');
-            thankYouDiv.innerHTML = `Thank you, ${name}!`;
-            thankYouDiv.style.display = 'block';
+            // Construct URL with query parameters
+            const thankYouUrl = `thankyou.html?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}`;
 
-            // Optional: If you want to keep custom thank you message with webhook
-            // this.submit(); // This will trigger the webhook
-        });
+            // Submit form via fetch first
+            fetch('https://tobinv.app.n8n.cloud/webhook-test/1a6a28c2-92a4-4304-8181-9e55142ee106', {
+                method: 'POST',
+                body: new FormData(event.target)
+            })
+                .then(response => {
+                    // Redirect to thank you page after successful submission
+                    window.location.href = thankYouUrl;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('There was a problem submitting your form');
+                });
+        }
     </script>
 </body>
 
