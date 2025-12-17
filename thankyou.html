@@ -68,15 +68,24 @@
     </section>
 
     <script>
-        // Parse URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        const name = urlParams.get('name');
-
-        // Update personalized message if name is present
-        if (name) {
-            document.getElementById('personalized-message').innerHTML =
-                `Thank you, ${name}! We've received your submission and will get back to you soon.`;
+        function generateValidToken() {
+            const currentDate = new Date().toISOString().split('T')[0];
+            return btoa(`form-submission-${currentDate}`);
         }
+
+        // Verify submission token
+        function verifySubmissionToken() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+
+            // Check if token exists and is valid
+            if (!token || token !== generateValidToken()) {
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Run verification on page load
+        window.addEventListener('load', verifySubmissionToken);
     </script>
 </body>
 
