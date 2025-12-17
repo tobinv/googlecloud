@@ -119,18 +119,18 @@
 
     <script>
         document.getElementById('contact-form').addEventListener('submit', function (e) {
-            e.preventDefault();
+            // Remove preventDefault if you want standard form submission
+            // e.preventDefault(); 
+
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
 
-            // This is a placeholder for server-side submission
-            // In a real-world scenario, you would send this to a backend server
             const thankYouDiv = document.getElementById('thank-you');
             thankYouDiv.innerHTML = `Thank you, ${name}!`;
             thankYouDiv.style.display = 'block';
 
-            // Optional: Reset form
-            this.reset();
+            // Optional: If you want to keep custom thank you message with webhook
+            // this.submit(); // This will trigger the webhook
         });
     </script>
 </body>
