@@ -111,27 +111,31 @@
 
     <script>
         function handleSubmit(event) {
-            event.preventDefault(); // Prevent default form submission
+            event.preventDefault();
 
-            // Redirect to thank you page with form data
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
 
-            // Construct URL with query parameters
             const thankYouUrl = `thankyou.html?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}`;
 
-            // Submit form via fetch first
             fetch('https://tobinv.app.n8n.cloud/webhook-test/1a6a28c2-92a4-4304-8181-9e55142ee106', {
                 method: 'POST',
                 body: new FormData(event.target)
             })
                 .then(response => {
-                    // Redirect to thank you page after successful submission
+                    if (!response.ok) {
+                        // Handle non-2xx responses
+                        throw new Error('Webhook submission failed');
+                    }
                     window.location.href = thankYouUrl;
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('There was a problem submitting your form');
+                    // Option 1: Show error and stay on page
+                    alert('There was a problem submitting your form. Please try again later.');
+
+                    // Option 2: Still redirect (if you want to always show thank you)
+                    // window.location.href = thankYouUrl;
                 });
         }
     </script>
