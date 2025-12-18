@@ -26,7 +26,7 @@ function sendErrorEmail($errorCode, $errorDetails)
 
     // Log to file if mail fails
     if (!$mailSent) {
-        error_log($message, 3, "/var/www/html/email_error_log.txt");
+        error_log("Failed to send email for error: " . $errorCode . "\n" . $message, 3, "/var/www/html/email_error_log.txt");
     }
 
     return $mailSent;
