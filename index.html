@@ -151,7 +151,9 @@
         }
 
         function logError(errorCode, errorDetails) {
-            fetch('log_error.php', {
+            console.log('Attempting to log error:', errorCode, errorDetails);
+
+            fetch('/log_error.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -160,7 +162,17 @@
                     errorCode: errorCode,
                     errorDetails: errorDetails
                 })
-            });
+            })
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    return response.text(); // Use text() to see full response
+                })
+                .then(text => {
+                    console.log('Response text:', text);
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                });
         }
 
     </script>
