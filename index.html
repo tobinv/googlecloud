@@ -120,14 +120,19 @@
             // Generate a token
             const token = generateValidToken();
 
+            // Create FormData manually to ensure all form fields are captured
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('email', email);
+
             fetch('https://tobinv.app.n8n.cloud/webhook/1a6a28c2-92a4-4304-8181-9e55142ee106', {
                 method: 'POST',
-                body: new FormData(event.target)
+                body: formData
             })
                 .then(response => {
                     if (!response.ok) {
                         // Log the specific error
-                        return logError('WEBHOOK_RESPONSE_ERROR', response.status);
+                        return logError('WEBHOOK_RESPONSE_ERROR', `HTTP ${response.status}: ${response.statusText}`);
                     }
                     window.location.href = `thankyou.html?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&token=${token}`;
                 })
@@ -140,8 +145,12 @@
                 });
         }
 
+        function generateValidToken() {
+            const currentDate = new Date().toISOString().split('T')[0];
+            return btoa(`form-submission-${currentDate}`);
+        }
+
         function logError(errorCode, errorDetails) {
-            // Use fetch to a separate PHP endpoint
             fetch('log_error.php', {
                 method: 'POST',
                 headers: {
