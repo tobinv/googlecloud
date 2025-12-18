@@ -111,11 +111,6 @@
 
     <script>
 
-        function generateValidToken() {
-            const currentDate = new Date().toISOString().split('T')[0];
-            return btoa(`form-submission-${currentDate}`);
-        }
-
         function handleSubmit(event) {
             event.preventDefault();
 
@@ -130,13 +125,35 @@
                 body: new FormData(event.target)
             })
                 .then(response => {
+                    if (!response.ok) {
+                        // Log the specific error
+                        return logError('WEBHOOK_RESPONSE_ERROR', response.status);
+                    }
                     window.location.href = `thankyou.html?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&token=${token}`;
                 })
                 .catch(error => {
+                    // Log the network error
+                    logError('NETWORK_ERROR', error.message);
+
                     console.error('Error:', error);
                     alert('There was a problem submitting your form');
                 });
         }
+
+        function logError(errorCode, errorDetails) {
+            // Use fetch to a separate PHP endpoint
+            fetch('log_error.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    errorCode: errorCode,
+                    errorDetails: errorDetails
+                })
+            });
+        }
+
     </script>
 </body>
 
