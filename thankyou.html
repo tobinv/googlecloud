@@ -77,10 +77,19 @@
         function verifySubmissionToken() {
             const urlParams = new URLSearchParams(window.location.search);
             const token = urlParams.get('token');
+            const name = urlParams.get('name');
+            const email = urlParams.get('email');
 
             // Check if token exists and is valid
             if (!token || token !== generateValidToken()) {
                 window.location.href = 'index.html';
+                return;
+            }
+
+            // Update personalized message if name exists
+            if (name) {
+                document.getElementById('personalized-message').textContent =
+                    `Thank you, ${name}! We've received your submission.`;
             }
         }
 
